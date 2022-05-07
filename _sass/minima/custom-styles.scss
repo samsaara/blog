@@ -1,7 +1,12 @@
 /*-----------------------------------*/
 /*--- IMPORT STYLES FOR FASTPAGES ---*/
 @import "minima/fastpages-styles";   
-
+.post-content p, .post-content li {
+   font-size: 15px;
+}
+.page-content {
+        font-family: "Fira Sans" !important;
+}
 
 
 /*-----------------------------------*/
@@ -9,4 +14,10 @@
 
 // If you want to turn off dark background for syntax highlighting, comment or delete the below line.
 @import "minima/fastpages-dracula-highlight"; 
-@import "minima/dark-mode"
+.input_area pre, .input_area div {
+    font-family: "Fira Code";
+    font-size: 100%;
+}
+
+
+// @import "minima/dark-mode"
