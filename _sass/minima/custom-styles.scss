@@ -1,25 +1,44 @@
 /*-----------------------------------*/
 /*--- IMPORT STYLES FOR FASTPAGES ---*/
-@import "minima/fastpages-styles";   
+@import "minima/fastpages-styles";
 .post-content p, .post-content li {
    font-size: 15px;
 }
+
 .page-content {
-    font-family: "Fira Sans" !important;
+    font-family: $base-font-family !important;
 }
-.input_area pre, .input_area div {
-    font-family: "Fira Code" !important;
-}
+
 .post figcaption {
   color: olive;
 }
 h1, h2, h3, h4 {
     color: #16a085; // inspired from https://knhash.in/Pudhina/
+    font-family: $headings-font-family;
     code {
-      font-family: "Fira Code";
+      font-family: $code-font-family;
     }
 }
 
+::-webkit-scrollbar-thumb {
+  background-color: #a9d6cd;
+}
+
+// things inside ```
+pre code {
+  font-size: 95% !important;
+  font-family: $code-font-family !important;
+}
+
+// the area with 'hide/show code'
+.code_cell {
+  margin: .5rem 0px !important;
+}
+
+// list under `tags`
+li {
+    color: #478cc2;
+}
 
 /*-----------------------------------*/
 /*----- ADD YOUR STYLES BELOW -------*/
@@ -27,7 +46,7 @@ h1, h2, h3, h4 {
 // If you want to turn off dark background for syntax highlighting, comment or delete the below line.
 @import "minima/fastpages-dracula-highlight"; 
 .input_area pre, .input_area div {
-    font-family: "Fira Code";
+    font-family: $code-font-family;
     font-size: 100%;
 }
 
@@ -35,7 +54,7 @@ h1, h2, h3, h4 {
 // @import "minima/dark-mode"
 
 
-/* =Glitch effect, Source: http://codepen.io/bulby97/pen/fcvay *//************/
+/* =Glitch effect, Source: https://knhash.in/Pudhina */
 .glitch {
     position: relative;
     animation: glitch 2s steps(100) infinite;
