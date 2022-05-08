@@ -43,6 +43,9 @@ pre code {
 li {
     color: #478cc2;
 }
+li code {
+    background-color: #ade4d9;
+}
 
 /*-----------------------------------*/
 /*----- ADD YOUR STYLES BELOW -------*/
@@ -59,6 +62,10 @@ li {
 }
 .language-python + .language-plaintext pre  {
     background-color: $dt-gray-light !important;
+}
+p code {
+    font-size: 90%;
+    background-color: #ade4d9;
 }
 
 
