@@ -1,0 +1,34 @@
+<footer class="site-footer h-card">
+
+    <div class="wrapper">
+        <div class="custom-footer-content">
+            <p>&#169; {{ site.authors.fullname | escape }} {{ site.authors.copyright-year | escape }}</p>
+        </div>
+        <!-- <span>test</span> -->
+        <div class="footer-col-wrapper">
+            <a href="{{ 'feed.xml' | relative_url }}">
+                <svg class="svg-icon orange">
+                <use xlink:href="{{ 'assets/minima-social-icons.svg#rss' | relative_url }}"></use>
+                </svg>
+            </a>
+            <div class="fa-social-links">
+                {% if site.authors.email %}
+                <a href="mailto:{{ site.authors.email }}" class="fa-social-links__entry" target="_blank">
+                    <i class="fa fa-envelope-square"></i>
+                </a>
+                {% endif %}
+                {% if site.authors.github %}
+                <a href="https://github.com/{{ site.authors.github }}" class="fa-social-links__entry" target="_blank">
+                    <i class="fa fa-github-square"></i>
+                </a>
+                {% endif %}
+                {% if site.authors.linkedin %}
+                <a href="https://linkedin.com/in/{{ site.authors.linkedin }}" class="fa-social-links__entry" target="_blank">
+                    <i class="fa fa-linkedin"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</footer>

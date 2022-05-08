@@ -68,7 +68,7 @@ pre {
 }
 
 // make sure the post title doesn't have too much spacing
-.post-title { margin-top: .5rem !important; }
+.post-title { margin-top: .5rem !important;}
 
 li {
   h3, h4 {
@@ -239,7 +239,7 @@ table {
 // Handling large charts on mobile devices
 // @media only screen and (max-width: 1200px) {
 //   /* for mobile phone and tablet devices */
-  .output_wrapper{
+.output_wrapper{
     overflow: auto;
   }
 // }
