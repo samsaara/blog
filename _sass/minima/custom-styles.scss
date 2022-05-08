@@ -12,6 +12,7 @@
 .post figcaption {
   color: olive;
 }
+
 h1, h2, h3, h4 {
     color: #16a085; // inspired from https://knhash.in/Pudhina/
     font-family: $headings-font-family;
@@ -30,6 +31,9 @@ pre code {
   font-family: $code-font-family !important;
 }
 
+.post-title {
+    font-size:280%;
+}
 // the area with 'hide/show code'
 .code_cell {
   margin: .5rem 0px !important;
@@ -49,9 +53,23 @@ li {
     font-family: $code-font-family;
     font-size: 100%;
 }
+.custom-header-content {
+    font-family: $base-font-family;
+    font-size: 120%;
+}
+.custom-footer-content {
+    font-family: $base-font-family;
+}
 
+.fa-social-links {
+    font-size: 150%;
+    list-style-type: none; 
+}
 
-// @import "minima/dark-mode"
+.fa-social-links__entry {
+    display: inline-block;
+    margin-left: 10px; 
+}
 
 
 /* =Glitch effect, Source: https://knhash.in/Pudhina */

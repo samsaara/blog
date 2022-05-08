@@ -37,10 +37,18 @@ url: "https://samsaara.github.io" # the base hostname & protocol for your site, 
 baseurl: "/blog" # the subpath of your site, e.g. "/blog".
 
 # Github and twitter are optional:
-minima:
-  social_links:
+# minima:
+  # social_links:
     # twitter:
-    github: samsaara
+    # github: samsaara
+    # linkedin: vaddinavivek
+
+authors:
+  fullname: Vivek Vaddina
+  copyright-year: 2022
+  github: samsaara
+  linkedin: vivekvaddina
+  email: 6368653+samsaara@users.noreply.github.com
 
 # Set this to true to get LaTeX math equation support
 use_math: 
