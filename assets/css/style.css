@@ -122,7 +122,7 @@ html { font-size: 16px; }
 body, h1, h2, h3, h4, h5, h6, p, blockquote, pre, hr, dl, dd, ol, ul, figure { margin: 0; padding: 0; }
 
 /** Basic styling */
-body { font: 400 16px/1.5 -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol", "Apple Color Emoji", Roboto, Helvetica, Arial, sans-serif; color: #111111; background-color: #fdfdfd; -webkit-text-size-adjust: 100%; -webkit-font-feature-settings: "kern" 1; -moz-font-feature-settings: "kern" 1; -o-font-feature-settings: "kern" 1; font-feature-settings: "kern" 1; font-kerning: normal; display: flex; min-height: 100vh; flex-direction: column; overflow-wrap: break-word; }
+body { font: 400 16px/1.5 "Fira Sans", serif; color: #111111; background-color: #fdfdfd; -webkit-text-size-adjust: 100%; -webkit-font-feature-settings: "kern" 1; -moz-font-feature-settings: "kern" 1; -o-font-feature-settings: "kern" 1; font-feature-settings: "kern" 1; font-kerning: normal; display: flex; min-height: 100vh; flex-direction: column; overflow-wrap: break-word; }
 
 /** Set `margin-bottom` to maintain vertical rhythm */
 h1, h2, h3, h4, h5, h6, p, blockquote, pre, ul, ol, dl, figure, .highlight { margin-bottom: 15px; }
@@ -167,7 +167,7 @@ blockquote > :last-child { margin-bottom: 0; }
 blockquote i, blockquote em { font-style: normal; }
 
 /** Code formatting */
-pre, code { font-family: "Menlo", "Inconsolata", "Consolas", "Roboto Mono", "Ubuntu Mono", "Liberation Mono", "Courier New", monospace; font-size: 0.9375em; border: 1px solid #e8e8e8; border-radius: 3px; background-color: #eeeeff; }
+pre, code { font-family: "Fira Code", serif; font-size: 0.9375em; border: 1px solid #e8e8e8; border-radius: 3px; background-color: #eeeeff; }
 
 code { padding: 1px 5px; }
 
@@ -427,6 +427,28 @@ pre code { font-size: 15px !important; }
 
 .youtube-iframe-wrapper iframe, .youtube-iframe-wrapper object, .youtube-iframe-wrapper embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
+.post-content p, .post-content li { font-size: 110%; }
+
+.page-content { font-family: "Fira Sans", serif !important; }
+
+.post figcaption { color: olive; }
+
+h1, h2, h3, h4 { color: #16a085; font-family: "Alef", serif; }
+
+h1 code, h2 code, h3 code, h4 code { font-family: "Fira Code", serif; }
+
+::-webkit-scrollbar-thumb { background-color: #a9d6cd; }
+
+pre code { font-size: 80% !important; font-family: "Fira Code", serif !important; }
+
+.post-title { font-size: 280%; }
+
+.code_cell { margin: .5rem 0px !important; }
+
+li { color: #478cc2; }
+
+li code { background-color: #ade4d9; }
+
 /*-----------------------------------*/
 /*----- ADD YOUR STYLES BELOW -------*/
 .language-python + .language-plaintext { border-left: 1px solid grey; margin-left: 1rem !important; }
@@ -483,5 +505,127 @@ pre code { font-size: 15px !important; }
 .highlight .gd { color: #ff5555; }
 
 p code { font-size: 19px; }
+
+.input_area pre, .input_area div { font-family: "Fira Code", serif; font-size: 100%; }
+
+.language-python + .language-plaintext code { background-color: #f8f8f2 !important; color: #282a36; }
+
+.language-python + .language-plaintext pre { background-color: #f8f8f2 !important; }
+
+p code { font-size: 90%; background-color: #ade4d9; }
+
+.custom-header-content { font-family: "Fira Sans", serif; font-size: 120%; }
+
+.custom-footer-content { font-family: "Fira Sans", serif; }
+
+.fa-social-links { font-size: 150%; list-style-type: none; }
+
+.fa-social-links__entry { display: inline-block; margin-left: 10px; }
+
+/* =Glitch effect, Source: https://knhash.in/Pudhina */
+.glitch { position: relative; animation: glitch 2s steps(100) infinite; }
+
+@keyframes glitch { 0% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  1% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  2% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  3% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  4% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  5% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  6% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  7% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  8% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  9% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  10% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  11% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  12% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  13% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  14% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  15% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  16% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  17% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  18% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  19% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  20% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  21% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  22% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  23% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  24% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  25% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  26% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  27% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  28% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  29% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  30% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  31% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  32% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  33% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  34% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  35% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  36% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  37% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  38% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  39% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  40% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  41% { text-shadow: 50px 0 0 blue, -50px 0 0 lime; }
+  42% { text-shadow: 0 0 0 blue, 0 0 0 lime; }
+  43% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  44% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  45% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  46% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  47% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  48% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  49% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  50% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  51% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  52% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  53% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  54% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  55% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  56% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  57% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  58% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  59% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  60% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  61% { text-shadow: 30px 0 0 red, -30px 0 0 lime; }
+  62% { text-shadow: 0 0 0 red, 0 0 0 lime; }
+  63% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 blue; }
+  64% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 blue; }
+  65% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 blue; }
+  66% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 blue; }
+  67% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  68% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  69% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  70% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  71% { text-shadow: 70px 0 0 red, -70px 0 0 blue; }
+  72% { text-shadow: 0 0 0 red, 0 0 0 blue; }
+  73% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  74% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  75% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  76% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+  77% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  78% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  79% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  80% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+  81% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  82% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  83% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  84% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  85% { text-shadow: 0.5px 0 0 red, -0.5px 0 0 lime; }
+  86% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  87% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  88% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  89% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  90% { text-shadow: -1px 0 0 red, 1px 0 0 lime; }
+  91% { text-shadow: 60px 0 0 lime, -60px 0 0 blue; }
+  92% { text-shadow: 0 0 0 lime, 0 0 0 blue; }
+  92% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  93% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  94% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  95% { text-shadow: 0.7px 0 0 blue, -0.7px 0 0 lime; }
+  96% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  97% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  98% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  99% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; }
+  100% { text-shadow: -1px 0 0 blue, 1px 0 0 lime; } }
 
 /*# sourceMappingURL=style.css.map */
