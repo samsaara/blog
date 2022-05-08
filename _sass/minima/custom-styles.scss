@@ -48,11 +48,22 @@ li {
 /*----- ADD YOUR STYLES BELOW -------*/
 
 // If you want to turn off dark background for syntax highlighting, comment or delete the below line.
-@import "minima/fastpages-dracula-highlight"; 
+@import "minima/fastpages-dracula-highlight";
 .input_area pre, .input_area div {
     font-family: $code-font-family;
     font-size: 100%;
 }
+.language-python + .language-plaintext code {
+    background-color:  $dt-gray-light !important;
+    color: $dt-gray-dark;
+}
+.language-python + .language-plaintext pre  {
+    background-color: $dt-gray-light !important;
+}
+
+
+// @import "minima/dark-mode";
+
 .custom-header-content {
     font-family: $base-font-family;
     font-size: 120%;
