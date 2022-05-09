@@ -14,7 +14,7 @@ Thanks for visiting my humble abode on the Internet. I am Vivek, a freelance `Da
 
 I have over 6 years of experience in Python & Machine Learning ecosystems across a variety of sectors ranging from Fashion :shopping: to Mobility :kick_scooter: to Fintech :currency_exchange:. 
 
-At [Sezzle](https://sezzle.eu/), a platform offering [BNPL](https://en.wikipedia.org/wiki/Buy_now,_pay_later) [^1] service, I worked on developing and deploying early machine learning based fraud detection models. Prior to that at [FreeNow](https://www.free-now.com/de/), a mobility solutions provider, I worked on [GMV](https://en.wikipedia.org/wiki/Gross_merchandise_volume) [^2] forecasting, churn prediction etc.
+At [Sezzle](https://sezzle.eu/), a platform offering [BNPL](https://en.wikipedia.org/wiki/Buy_now,_pay_later) service, I worked on developing and deploying early machine learning based fraud detection models. Prior to that at [FreeNow](https://www.free-now.com/de/), a mobility solutions provider, I worked on [GMV](https://en.wikipedia.org/wiki/Gross_merchandise_volume) forecasting, churn prediction etc.
 
 Apart from :snake: :computer: :bar_chart:, I am also interested in :man_farmer::tractor:, :musical_note: and aim to know a little bit of everything I come across.
 
@@ -22,8 +22,5 @@ Please feel free to [reach me](mailto:vvaddina@pm.me) for any business, consulti
 
 
 ---
-
-[^1]: Buy Now, Pay Later
-[^2]: Gross Merchandise Volume
 
 #### This website is powered by **[fastpages](https://github.com/fastai/fastpages)**.
