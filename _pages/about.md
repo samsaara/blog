@@ -19,7 +19,7 @@ At [Sezzle](https://sezzle.eu/), a platform offering BNPL [^1] service, I worked
 Apart from :snake: :computer: :bar_chart:, I am also interested in :man_farmer::tractor:, :musical_note: and aim to know a little bit of everything I come across.
 
 
-Please feel free to reach out to me for any business, consulting or workshop opportunities. 😃
+Please feel free to [reach me](mailto:vvaddina@pm.me) for any business, consulting or workshop opportunities. 😃
 
 
 ---
