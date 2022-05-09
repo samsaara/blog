@@ -11,7 +11,7 @@ After the mandatory [Hello World](../09/hello-world.html) post, I thought of wri
 
 ## Motivation
 
-I was looking for ways to have my own tiny little place on the internet and therefore scouted for feasible options. As a Data Scientist, you interact with code on a daily basis and (Jupyter) Notebooks are part of your DNA :stuck_out_tongue:. So the criteria that I had set for myself was that whatever platform I choose, it has to be (a) very code friendly, (b) easy to maintain and (c) relatively affordable (if possible, even free).
+I was looking for ways to have my own tiny little place on the internet and therefore scouted for feasible options. As a Data Scientist, I interact with code on a regular basis and (Jupyter) Notebooks are part of your DNA :stuck_out_tongue:. So the criteria that I had set for myself was that whatever platform I choose, it has to be (a) very code friendly, (b) easy to maintain and (c) relatively affordable (if possible, even free).
 
 ### Quest for the right tool
 
