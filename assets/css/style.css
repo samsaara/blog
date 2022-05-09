@@ -437,6 +437,8 @@ h1, h2, h3, h4 { color: #16a085; font-family: "Alef", serif; }
 
 h1 code, h2 code, h3 code, h4 code { font-family: "Fira Code", serif; }
 
+blockquote { font-size: 100%; }
+
 ::-webkit-scrollbar-thumb { background-color: #a9d6cd; }
 
 pre code { font-size: 80% !important; font-family: "Fira Code", serif !important; }
@@ -448,6 +450,8 @@ pre code { font-size: 80% !important; font-family: "Fira Code", serif !important
 li { color: #478cc2; }
 
 li code { background-color: #ade4d9; }
+
+img.emoji { vertical-align: sub !important; }
 
 /*-----------------------------------*/
 /*----- ADD YOUR STYLES BELOW -------*/
@@ -512,7 +516,7 @@ p code { font-size: 19px; }
 
 .language-python + .language-plaintext pre { background-color: #f8f8f2 !important; }
 
-p code { font-size: 90%; background-color: #ade4d9; }
+p code { font-size: 90%; font-family: "Fira Code", serif; background-color: #ade4d9; }
 
 .custom-header-content { font-family: "Fira Sans", serif; font-size: 120%; }
 
