@@ -4,6 +4,7 @@ title: Setting up your blog with Fastpages
 description: Start your blogging journey in a few easy steps.
 categories: [markdown]
 hide: false
+comments: true
 image: images/blog-setup-ubuntu/fastpages_diagram.png
 ---
 
