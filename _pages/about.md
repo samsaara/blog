@@ -12,7 +12,7 @@ Thanks for visiting my humble abode on the Internet. I am Vivek, a freelance `Da
 
 **[Saṃsāra](https://en.wikipedia.org/wiki/Sa%E1%B9%83s%C4%81ra)** means *World* in Sanskrit and I welcome you into mine where I blog about programming, among other things.
 
-I have over 6 years of experience in Python & Machine Learning ecosystems across a variety of sectors ranging from Fashion :shopping: to Mobility :kick_scooter: to Fintech :currency_exchange:. 
+I have over 6 years of experience in Python & Machine Learning ecosystems across a broad variety of sectors ranging from Fashion :shopping: to Mobility :kick_scooter: to Fintech :currency_exchange:. 
 
 At [Sezzle](https://sezzle.eu/), a platform offering [BNPL](https://en.wikipedia.org/wiki/Buy_now,_pay_later) service, I worked on developing and deploying early machine learning based fraud detection models. Prior to that at [FreeNow](https://www.free-now.com/de/), a mobility solutions provider, I worked on [GMV](https://en.wikipedia.org/wiki/Gross_merchandise_volume) forecasting, churn prediction etc.
 
