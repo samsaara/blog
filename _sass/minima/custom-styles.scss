@@ -2,12 +2,15 @@
 /*--- IMPORT STYLES FOR FASTPAGES ---*/
 @import "minima/fastpages-styles";
 .post-content p, .post-content li {
-   font-size: 110%;
+   font-size: 1.1em;
 }
-
 
 .page-content {
     font-family: $base-font-family !important;
+}
+
+.page-content li {
+    font-size: 1rem;
 }
 
 .post figcaption {
@@ -23,7 +26,7 @@ h1, h2, h3, h4 {
 }
 
 blockquote {
-    font-size: 100%;
+    font-size: 1rem;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -32,13 +35,14 @@ blockquote {
 
 // things inside ```
 pre code {
-  font-size: 80% !important;
+  font-size: 0.9rem !important;
   font-family: $code-font-family !important;
 }
 
 .post-title {
-    font-size:280%;
+    font-size: 2.8em;
 }
+
 // the area with 'hide/show code'
 .code_cell {
   margin: .5rem 0px !important;
@@ -50,6 +54,8 @@ li {
 }
 li code {
     background-color: #ade4d9;
+    font-family: $code-font-family;
+    font-size: .9rem;
 }
 
 img.emoji{
