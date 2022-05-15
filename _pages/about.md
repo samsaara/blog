@@ -18,7 +18,7 @@ At [Sezzle](https://sezzle.eu/), a platform offering [BNPL](https://en.wikipedia
 
 Apart from :snake: :computer: :bar_chart:, I am also interested in :man_farmer::tractor:, :musical_note:, :man_cook: and aim to know a little bit of everything I come across.
 
-Please feel free to [reach me](mailto:vvaddina@pm.me) for any business, consulting or workshop opportunities. You can also book a free [15 min](https://cal.com/vivekvaddina/15min) or [30 min](https://cal.com/vivekvaddina/30min) call with me. 😃
+Please feel free to [reach me](mailto:vvaddina@pm.me) for any business, consulting or workshop opportunities. 😃
 
 
 ---
