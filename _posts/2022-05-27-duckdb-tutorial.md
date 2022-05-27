@@ -9,7 +9,7 @@ comments: true
 categories: [SQL, EDA]
 image: images/duckdb/ravi-singh-rN3dqzDrhdk-unsplash.jpg
 hide: false
-search_exclude: true
+search_exclude: false
 nb_path: _notebooks/2022-05-27-duckdb-tutorial.ipynb
 layout: notebook
 ---
