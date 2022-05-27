@@ -134,6 +134,13 @@ layout: notebook
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>Next step is to run <code>pip install pyarrow</code> to add support for reading/writing <em>parquet</em> data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Jupyter-Notebook-setup">Jupyter Notebook setup<a class="anchor-link" href="#Jupyter-Notebook-setup"> </a></h3><p>If in case you wish to explore it in Jupyter Notebooks, install a few additional libraries for a better experience:</p>
 
 <pre><code>pip install ipython-sql SQLAlchemy duckdb-engine</code></pre>
@@ -684,7 +691,7 @@ layout: notebook
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>{% include warning.html content='When using Google Colab, please set it only to <code>2</code> instead to avoid crashing the kernel.' %}</p>
+<p>{% include warning.html content='When using free tier of Google Colab, please set it only to <code>2</code> to avoid crashing the kernel instead.' %}</p>
 
 </div>
 </div>
@@ -803,7 +810,7 @@ WHERE a &gt;= 5
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Notice that we didn’t declare df as a view, nor did we create any table. DuckDB simply looks for any python variable that was declared before if the table name doesn’t exist.</p>
+<p>Notice that we didn’t declare <code>df</code> as a view, nor did we create any table. DuckDB simply looks for any python variable that was declared before if the table name doesn’t exist.</p>
 
 </div>
 </div>
@@ -818,7 +825,7 @@ WHERE a &gt;= 5
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Accessing-files-with-DuckDB">Accessing files with DuckDB<a class="anchor-link" href="#Accessing-files-with-DuckDB"> </a></h1><p>Often times we have data stored either in DB or in <code>parquet/csv</code> formats and they could be huge or may not/barely fit in memory. Loading them with pandas incur significant memory overhead and also possibly <a href="https://pandas.pydata.org/pandas-docs/stable/user_guide/scale.html">creates multiple copies</a> when performing certain operations. With DuckDB, such files can be queried directly without any copying because of <a href="https://arrow.apache.org/blog/2021/12/03/arrow-duckdb/">direct integration with Apache Arrow</a>.</p>
-<p>To demonstrate this, we’ll download an <a href="https://www.kaggle.com/datasets/yuanyuwendymu/airline-delay-and-cancellation-data-2009-2018">airline delay &amp; cancelation dataset from kaggle</a>. The compressed archive is about <code>~2GB</code> and when deflated, creates a couple of CSVs totalling 7GB of data.</p>
+<p>To demonstrate this, we’ll download an <a href="https://www.kaggle.com/datasets/yuanyuwendymu/airline-delay-and-cancellation-data-2009-2018">airline delay &amp; cancelation dataset from kaggle</a> (and place it under <code>data/airline_data/</code> folder). The compressed archive is about <code>~2GB</code> and when deflated, creates a couple of CSVs totalling <code>~8GB</code> of data.</p>
 
 </div>
 </div>
@@ -1237,7 +1244,7 @@ limit 5
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This takes much less time than with DuckDB. It’s possibly because such operations are optimized in pandas and also for computing simple metrics across rows (such as mean, min, max etc.), pandas can make use of highly optimized numpy routines under the hood. But, as we’ll see later, these would only go so far.</p>
+<p>While the first operation with DuckDB took <code>~250ms</code>, the second one above took only <code>~50ms</code>. It’s possibly because such operations are optimized in pandas and also for computing simple metrics across rows (such as mean, min, max etc.), pandas can make use of highly optimized numpy routines under the hood. But, as we’ll see later, these would only go so far.</p>
 <p>To load all these CSVs into one dataframe with pandas is very inefficient and takes a lot of time. And it’ll most likely fail if your computer doesn’t have a beefy RAM. If you still gotta do it, you’d have to iterate through all CSVs and concatenate like so:</p>
 <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
 <span class="n">csvs</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="s1">&#39;data/airline_data/*.csv&#39;</span><span class="p">)</span>
@@ -1310,10 +1317,7 @@ limit 5
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<blockquote><p>If the above statement fails, try installing <code>PyArrow</code> first by simply running <code>pip install pyarrow</code>.</p>
-</blockquote>
-<p>Notice that we directly copied all the CSVs using regex to a single parquet file without ever copying data into pandas.</p>
-<p>Now, we ended up from a 7.5GB combined CSV files to a 2.5GB parquet file which now easily fits into memory. So we can load it now with pandas as:</p>
+<p>Notice that we directly copied all the CSVs using regex to a single parquet file without ever copying data into pandas. Now, we ended up from a 7.5GB combined CSV files to a 2.5GB parquet file which now easily fits into memory. So we can load it with pandas as:</p>
 
 </div>
 </div>
@@ -1465,7 +1469,7 @@ where TAXI_OUT &gt; 10
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong><em>The same operation is near instantaneous with DuckDB.</em></strong> <em>There’s just no comparison.</em></p>
+<p>While the earlier operation took <code>~9.5s</code>, the latter just took <strong>~250ms</strong> :zap:. <em>There’s just no comparison.</em></p>
 <p>This is because duckdb automatically optimizes the query by selecting only the required column(s) (aka <code>projection pushdown</code>) and then applies the filtering to get a subset of data (aka <code>filter pushdown</code>). Pandas instead reads through all the columns. We can optimize this in pandas by doing these pushdowns ourselves.</p>
 
 </div>
@@ -1508,14 +1512,14 @@ where TAXI_OUT &gt; 10
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We managed to bring this down from a whopping 30 seconds to almost a second. But using duckdb is still <code>~80%</code> faster than this.</p>
+<p>We managed to bring this down from several seconds to almost a second. But using duckdb is still about <code>70-90%</code> faster than this.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Using-Groupby">Using Groupby<a class="anchor-link" href="#Using-Groupby"> </a></h2><p>Let’s calculate a few aggregates using <code>groupby</code> with projection &amp; filter pushdowns combined.</p>
+<h2 id="Using-Groupby">Using Groupby<a class="anchor-link" href="#Using-Groupby"> </a></h2><p>Now let’s calculate a few aggregates using <code>groupby</code> with projection &amp; filter pushdowns combined.</p>
 <p>Here, we compute a few simple metrics with a certain airline carrier grouped by two origin &amp; destination airports and finally sort the results by the origin airport.</p>
 
 </div>
@@ -1535,7 +1539,7 @@ where TAXI_OUT &gt; 10
     <span class="p">(</span><span class="n">projection_df</span><span class="p">[</span><span class="s1">&#39;DEST&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">((</span><span class="s1">&#39;DCA&#39;</span><span class="p">,</span> <span class="s1">&#39;EWR&#39;</span><span class="p">)))</span> <span class="o">&amp;</span>
     <span class="p">(</span><span class="n">projection_df</span><span class="p">[</span><span class="s1">&#39;OP_CARRIER&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;XE&#39;</span><span class="p">)]</span>
 <span class="p">(</span><span class="n">origin_df</span>
-     <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;ORIGIN&#39;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;ORIGIN&#39;</span><span class="p">,</span> <span class="s1">&#39;DEST&#39;</span><span class="p">])</span>
      <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
          <span class="n">avg_taxi_out</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;TAXI_OUT&#39;</span><span class="p">,</span> <span class="s1">&#39;mean&#39;</span><span class="p">),</span>
          <span class="n">max_air_time</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;AIR_TIME&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">),</span>
@@ -1573,12 +1577,14 @@ where TAXI_OUT &gt; 10
   <thead>
     <tr style="text-align: right;">
       <th></th>
+      <th></th>
       <th>avg_taxi_out</th>
       <th>max_air_time</th>
       <th>total_distance</th>
     </tr>
     <tr>
       <th>ORIGIN</th>
+      <th>DEST</th>
       <th></th>
       <th></th>
       <th></th>
@@ -1587,12 +1593,14 @@ where TAXI_OUT &gt; 10
   <tbody>
     <tr>
       <th>DCA</th>
+      <th>EWR</th>
       <td>22.116009</td>
       <td>87.0</td>
       <td>828835.0</td>
     </tr>
     <tr>
       <th>EWR</th>
+      <th>DCA</th>
       <td>23.675481</td>
       <td>93.0</td>
       <td>831024.0</td>
@@ -1612,7 +1620,7 @@ where TAXI_OUT &gt; 10
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This took some time. We can make it a bit more concise by using <code>.query</code> for filtering pushdown.</p>
+<p>We can make it a bit more concise by using <code>.query</code> for filtering pushdown.</p>
 
 </div>
 </div>
@@ -1706,7 +1714,7 @@ where TAXI_OUT &gt; 10
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This operation is a bit faster than our earlier approach because <code>.query</code> uses a modified syntax of python and also indexing thus resulting in more efficient evaluation. We can now compare that to our SQL counterpart.</p>
+<p>This approach took only about half the time (~3s) compared to our earlier one because <code>.query</code> uses a modified syntax of python and also indexing thus resulting in more efficient evaluation. We can now compare that to our SQL counterpart...</p>
 
 </div>
 </div>
@@ -1806,7 +1814,7 @@ order by ORIGIN
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This is still around an <em>order of magnitude</em> faster with DuckDB and also a lot cleaner, I’d say. :wink:</p>
+<p>This ~400ms execution with duckdb above is around an <strong><em>order of magnitude faster</em></strong> and also a lot cleaner, I'd say. :wink:</p>
 <p>Notice that the data is already loaded under <code>df</code> and hence we don’t need to read from the source parquet file.</p>
 <blockquote><p>In the same way, we can also improve the performance of our queries <em>drastically</em> when using <strong><em>joins</em></strong> across multiple tables. I leave this as an exercise to the reader.</p>
 </blockquote>
@@ -2244,7 +2252,7 @@ order by ORIGIN
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Using-approximations">Using approximations<a class="anchor-link" href="#Using-approximations"> </a></h2><p>We can use approximations when responsiveness is more important than precision (esp. for larger datasets).</p>
+<h2 id="Using-approximations">Using approximations<a class="anchor-link" href="#Using-approximations"> </a></h2><p>At times, it suffices just to get an estimate of certain data rather than a precise answer. Using approximations would help us to just that.</p>
 
 </div>
 </div>
@@ -2488,17 +2496,15 @@ limit 10
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<ul>
-<li>Using approximations was about <code>3-4</code> times faster than getting the precise counts for this case.</li>
-</ul>
+<p>Our approximation query earlier ran about 3-4 times faster than the precise one in this case. This is crucial when responsiveness is more important than precision (esp. for larger datasets).</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Using-Window-functions">Using Window functions<a class="anchor-link" href="#Using-Window-functions"> </a></h2><p>And finally, let's wrap our analysis by showing off a bit more of what duckdb can do using some advanced SQL operations.</p>
-<p>We create a few CTEs (Common Table Expressions) to calculate a couple of features. We do filter &amp; projection pushdowns in one and compute our desired features in another. The first feature is a simple demo to showcase <code>if-else</code> support. The second feature is a bit advanced where we find out the last destination a given air carrier has flown to sorted by flying date. And when it doesn’t exist, we replace it with <code>NA</code>. We then take a sample from the final resultant set.</p>
+<h2 id="Using-Window-functions">Using Window functions<a class="anchor-link" href="#Using-Window-functions"> </a></h2><p>Finally, let's wrap our analysis by showing off a bit more of what duckdb can do using some advanced SQL operations.</p>
+<p>We create two CTEs (Common Table Expressions) to calculate a couple of features. We do filter &amp; projection pushdowns in one CTE and compute our desired features in another. The first feature is a simple demo to showcase <code>if-else</code> support. The second feature is a bit advanced where we find out the last destination a given air carrier has flown to, sorted by flying date. And when it doesn’t exist, replace it with <code>NA</code>. We then take a sample from the final resultant set.</p>
 
 </div>
 </div>
@@ -2698,19 +2704,22 @@ using sample 10;
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Nice, isn’t it?!</p>
+<p>Nice, isn’t it?! The same operation is unimaginably complex (for me, at least) in pandas. 🤯</p>
+<p>With DuckDB, we can combine one or more of many of such complex operations and execute in one go without worrying much about manual optimizations.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion"> </a></h1><p>Thanks so much for reading this far :heart:. Now you know most of the important stuff about DuckDB to get yourself started. Bear in mind that we hardly scratched the surface. DuckDB offers so much more. You can use correlated subqueries, nested types, etc. apart from its many <a href="https://duckdb.org/2022/05/04/friendlier-sql.html">user friendly features</a> such as column aliasing in <code>group by/having</code>, auto-incrementing duplicate columns, better string slicing and so on. Their <a href="https://duckdb.org/docs/">documentation</a> is very clean &amp; beginner friendly and the <a href="https://duckdb.org/news/">blog</a> has very informative posts as well. I encourage you to check those out.</p>
+<h1 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion"> </a></h1><p>We have noticed how performant DuckDB is and how it brings the  whole SQL ecosystem into Pandas. Its simple installation and light footprint means that we can integrate this into our existing workflows with minimal effort and achieve maximum gains in terms of execution speeds . We can also continue using pandas on larger datasets without loading them into memory or jumping onto a full blown distributed computing setup (<em>for a reasonable extent</em>).</p>
+<p>Thanks so much for reading this far :heart:. Now you know most of the important stuff about DuckDB to get yourself started. Bear in mind that we hardly scratched the surface. DuckDB offers so much more. You can use correlated subqueries, nested types, etc. apart from its many <a href="https://duckdb.org/2022/05/04/friendlier-sql.html">user friendly features</a> such as column aliasing in <code>group by/having</code>, auto-incrementing duplicate columns, better string slicing and so on. Their <a href="https://duckdb.org/docs/">documentation</a> is very clean &amp; beginner friendly and the <a href="https://duckdb.org/news/">blog</a> has very informative posts as well. I encourage you to check those out.</p>
 <h3 id="Sidenote">Sidenote<a class="anchor-link" href="#Sidenote"> </a></h3><ul>
 <li><a href="https://modin.org/">Modin</a> tries to parallellize pandas workflow by distributing the workload to multiple CPU cores. <a href="https://www.kdnuggets.com/2019/11/speed-up-pandas-4x.html">Have a look</a> and am guessing that we can also combine modin &amp; DuckDB for an even faster runtimes.</li>
-<li><a href="https://github.com/fugue-project/fugue">Fugue</a> is a new framework that provides a unified interface so that users can execute their Python, Pandas, and SQL code on various distributed computing platforms such as Spark and Dask without rewrites. Please check <a href="https://towardsdatascience.com/introducing-fugue-reducing-pyspark-developer-friction-a702230455de">here</a> for its nice introduction and <a href="https://towardsdatascience.com/fugue-and-duckdb-fast-sql-code-in-python-e2e2dfc0f8eb">this</a> article to get a feel of using it with DuckDB.</li>
+<li><a href="https://github.com/fugue-project/fugue">Fugue</a> is a new framework that provides a unified interface so that users can execute their Python, Pandas, and SQL code on various distributed computing platforms such as Spark and Dask without rewrites. Please check <a href="https://towardsdatascience.com/introducing-fugue-reducing-pyspark-developer-friction-a702230455de">here</a> for a nice introduction from its maintainer Kevin and also checkout <a href="https://towardsdatascience.com/fugue-and-duckdb-fast-sql-code-in-python-e2e2dfc0f8eb">this</a> article from Khuyen to get a feel of using it with DuckDB.</li>
 </ul>
-<p>I hope you have enjoyed this post and learnt something from it. Please let me know your thoughts/suggestions (or any mistakes) in the comments below.</p>
+<p>I hope you have enjoyed this post and learnt something from it. Please let me know your thoughts/suggestions (or any mistakes) in the comments below. :)</p>
+<p>Happy Ducking! :green_heart::duck::green_heart:</p>
 
 </div>
 </div>
