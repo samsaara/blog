@@ -2490,8 +2490,8 @@ limit 10
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Using-Window-functions">Using Window functions<a class="anchor-link" href="#Using-Window-functions"> </a></h2><p>And finally, we shall wrap our analysis by showing off a bit more of what duckdb can do using some advanced SQL operations.</p>
-<p>We shall create a few CTEs (Common Table Expressions) to calculate a couple of features. We do filter &amp; projection pushdowns in one and compute our desired features in another. The first feature is a simple demo to showcase <code>if-else</code> support. The second feature is a bit advanced where we find out the last destination a given air carrier has flown to sorted by flying date. And when it doesn’t exist, we replace it with <code>NA</code>. We then take a sample from the final resultant set.</p>
+<h2 id="Using-Window-functions">Using Window functions<a class="anchor-link" href="#Using-Window-functions"> </a></h2><p>And finally, let's wrap our analysis by showing off a bit more of what duckdb can do using some advanced SQL operations.</p>
+<p>We create a few CTEs (Common Table Expressions) to calculate a couple of features. We do filter &amp; projection pushdowns in one and compute our desired features in another. The first feature is a simple demo to showcase <code>if-else</code> support. The second feature is a bit advanced where we find out the last destination a given air carrier has flown to sorted by flying date. And when it doesn’t exist, we replace it with <code>NA</code>. We then take a sample from the final resultant set.</p>
 
 </div>
 </div>
@@ -2703,7 +2703,6 @@ using sample 10;
 <li><a href="https://modin.org/">Modin</a> tries to parallellize pandas workflow by distributing the workload to multiple CPU cores. <a href="https://www.kdnuggets.com/2019/11/speed-up-pandas-4x.html">Have a look</a> and am guessing that we can also combine modin &amp; DuckDB for an even faster runtimes.</li>
 <li><a href="https://github.com/fugue-project/fugue">Fugue</a> is a new framework that provides a unified interface so that users can execute their Python, Pandas, and SQL code on various distributed computing platforms such as Spark and Dask without rewrites. Please check <a href="https://towardsdatascience.com/introducing-fugue-reducing-pyspark-developer-friction-a702230455de">here</a> for its nice introduction and <a href="https://towardsdatascience.com/fugue-and-duckdb-fast-sql-code-in-python-e2e2dfc0f8eb">this</a> article to get a feel of using it with DuckDB.</li>
 </ul>
-<p>The notebook containing the code can be found here.</p>
 <p>I hope you have enjoyed this post and learnt something from it. Please let me know your thoughts/suggestions (or any mistakes) in the comments below.</p>
 
 </div>
