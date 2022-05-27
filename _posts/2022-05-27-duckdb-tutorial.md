@@ -684,6 +684,13 @@ layout: notebook
 
 <div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>{% include warning.html content='When using Google Colab, please set it only to <code>2</code> instead to avoid crashing the kernel.' %}</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p>We can also write a short snippet to run an SQL query, and return the result as a Pandas DataFrame in a pythonic way:</p>
 
 </div>
