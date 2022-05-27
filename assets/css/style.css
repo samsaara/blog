@@ -427,11 +427,11 @@ pre code { font-size: 15px !important; }
 
 .youtube-iframe-wrapper iframe, .youtube-iframe-wrapper object, .youtube-iframe-wrapper embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-.post-content p, .post-content li { font-size: 1.1em; }
+.post-content p, .post-content li { font-size: 1.3em; }
 
 .page-content { font-family: "Fira Sans", serif !important; }
 
-.page-content li { font-size: 1rem; }
+.page-content li { font-size: 1.1rem; }
 
 .post figcaption { color: olive; }
 
@@ -439,15 +439,15 @@ h1, h2, h3, h4 { color: #16a085; font-family: "Alef", serif; }
 
 h1 code, h2 code, h3 code, h4 code { font-family: "Fira Code", serif; }
 
-blockquote { font-size: 1rem; }
+blockquote { font-size: .9rem; }
 
 ::-webkit-scrollbar-thumb { background-color: #a9d6cd; }
 
-pre code { font-size: 0.9rem !important; font-family: "Fira Code", serif !important; }
+pre code { font-size: 1.1rem !important; font-family: "Fira Code", serif !important; }
 
 .post-title { font-size: 2.8em; }
 
-.code_cell { margin: .5rem 0px !important; }
+.code_cell { margin: 1.1rem 1px !important; }
 
 li { color: #478cc2; }
 
@@ -457,6 +457,10 @@ img.emoji { vertical-align: sub !important; }
 
 /*-----------------------------------*/
 /*----- ADD YOUR STYLES BELOW -------*/
+.footnotes { font-size: 1em !important; }
+
+.footnotes p, .footnotes li { font-size: 1em !important; }
+
 .language-python + .language-plaintext { border-left: 1px solid grey; margin-left: 1rem !important; }
 
 [class^="language-"]:not(.language-plaintext) pre, [class^="language-"]:not(.language-plaintext) code { background-color: #323443 !important; color: #f8f8f2; }
@@ -512,7 +516,7 @@ img.emoji { vertical-align: sub !important; }
 
 p code { font-size: 19px; }
 
-.input_area pre, .input_area div { font-family: "Fira Code", serif; font-size: 100%; }
+.input_area pre, .input_area div { font-family: "Fira Code", serif; font-size: 110%; margin-bottom: 0.2rem !important; }
 
 .language-python + .language-plaintext code { background-color: #f8f8f2 !important; color: #282a36; }
 

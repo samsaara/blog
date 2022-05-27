@@ -1,0 +1,3031 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Supercharge your data processing with DuckDB | Saṃsāra</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Supercharge your data processing with DuckDB" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Efficient &amp; blazing fast SQL analytics in Pandas with DuckDB" />
+<meta property="og:description" content="Efficient &amp; blazing fast SQL analytics in Pandas with DuckDB" />
+<link rel="canonical" href="https://samsaara.github.io/blog/sql/eda/2022/05/27/duckdb-tutorial.html" />
+<meta property="og:url" content="https://samsaara.github.io/blog/sql/eda/2022/05/27/duckdb-tutorial.html" />
+<meta property="og:site_name" content="Saṃsāra" />
+<meta property="og:image" content="https://samsaara.github.io/blog/images/duckdb/ravi-singh-rN3dqzDrhdk-unsplash.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-05-27T00:00:00-05:00" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="https://samsaara.github.io/blog/images/duckdb/ravi-singh-rN3dqzDrhdk-unsplash.jpg" />
+<meta property="twitter:title" content="Supercharge your data processing with DuckDB" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-05-27T00:00:00-05:00","datePublished":"2022-05-27T00:00:00-05:00","description":"Efficient &amp; blazing fast SQL analytics in Pandas with DuckDB","headline":"Supercharge your data processing with DuckDB","image":"https://samsaara.github.io/blog/images/duckdb/ravi-singh-rN3dqzDrhdk-unsplash.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"https://samsaara.github.io/blog/sql/eda/2022/05/27/duckdb-tutorial.html"},"url":"https://samsaara.github.io/blog/sql/eda/2022/05/27/duckdb-tutorial.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://samsaara.github.io/blog/feed.xml" title="Saṃsāra" /><meta name="google-site-verification" content="3SxB-BO1HYCeRZHqmQL0hnuTIvGTh2VGaIOQQz91-D4" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<script src="https://kit.fontawesome.com/46a8e4b185.js" crossorigin="anonymous"></script>
+
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+<link rel="manifest" href="assets/favicon/site.webmanifest">
+<link rel="mask-icon" href="assets/favicon/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<!-- custom fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alef" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Code" />
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="custom-header-content">
+    <div class="wrapper">
+<a class="site-title" rel="author" href="/blog/">Saṃsāra</a><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Supercharge your data processing with DuckDB</h1>
+<p class="page-description">Efficient &amp; blazing fast SQL analytics in Pandas with DuckDB</p>
+<p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-05-27T00:00:00-05:00" itemprop="datePublished">
+        May 27, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      19 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#SQL">SQL</a>
+         
+      
+        <a class="category-tags-link" href="/blog/categories/#EDA">EDA</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/samsaara/blog/tree/master/_notebooks/2022-05-27-duckdb-tutorial.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/samsaara/blog/blob/master/_notebooks/2022-05-27-duckdb-tutorial.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab">
+    </a>
+</div>
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1">
+<a href="#Introduction">Introduction </a>
+<ul>
+<li class="toc-entry toc-h2">
+<a href="#Setup">Setup </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Jupyter-Notebook-setup">Jupyter Notebook setup </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#DuckDB-vs-traditional-Databases">DuckDB vs traditional Databases </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#Accessing-DataFrames-with-DuckDB">Accessing DataFrames with DuckDB </a></li>
+<li class="toc-entry toc-h1">
+<a href="#Accessing-files-with-DuckDB">Accessing files with DuckDB </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Projection-&amp;-Filter-Pushdowns">Projection &amp; Filter Pushdowns </a></li>
+<li class="toc-entry toc-h2"><a href="#Using-Groupby">Using Groupby </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1">
+<a href="#Accessing-data-with-Views">Accessing data with Views </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Using-approximations">Using approximations </a></li>
+<li class="toc-entry toc-h2"><a href="#Using-Window-functions">Using Window functions </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1">
+<a href="#Conclusion">Conclusion </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Sidenote">Sidenote </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#Footnotes">Footnotes </a></li>
+</ul>
+<!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-05-27-duckdb-tutorial.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Do you have large datasets that you simply can not load into memory to analyse with Pandas? Or do you feel more comfortable expressing operations in SQL instead of python?</p>
+<p>Fret not, for you have <code>DuckDB</code> now! <img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://github.githubassets.com/images/icons/emoji/unicode/2728.png" height="20" width="20"><img class="emoji" title=":duck:" alt=":duck:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f986.png" height="20" width="20"><img class="emoji" title=":sparkles:" alt=":sparkles:" src="https://github.githubassets.com/images/icons/emoji/unicode/2728.png" height="20" width="20"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Introduction">
+<a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h1>
+<p>Most of us data scientists are familiar with Pandas, the de-facto data processing library in Python. It’s simple, powerful, able to handle a myriad data formats &amp; sizes and for the most part, very intuitive. And people familiar with SQL as well know how powerful it too is in its ability to handle complex data transformations with a concise syntax. But sometimes, you have to trade off execution speeds in favor of intuitivity/expressiveness or vice versa. This especially becomes painful when you either have large (OOM) datasets or need to perform complex data wrangling on your data. At times, it makes more sense to handle that in SQL rather than in Pandas.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>DuckDB aims to bring these together with a fast &amp; efficient SQL query execution engine that can run complex queries on large sets of data. It integrates tightly with Pandas DataFrames and allows us to run these queries directly on top of them without needing to take data in &amp; out of it.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In this tutorial, we shall see how we can leverage DuckDB in various analytical workloads.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Setup">
+<a class="anchor" href="#Setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup<a class="anchor-link" href="#Setup"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>DuckDB is very lightweight and has <strong><em>no external dependencies</em></strong> and runs <em>within</em> the host process itself. Simply install it with:</p>
+
+<pre><code>pip install duckdb==0.3.4</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To initialize it, run:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">duckdb</span>
+<span class="n">dbcon</span> <span class="o">=</span> <span class="n">duckdb</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>That’s it! Now you can test it by running:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dbcon</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">'select 1, 2, 3'</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(1, 2, 3)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Jupyter-Notebook-setup">
+<a class="anchor" href="#Jupyter-Notebook-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Jupyter Notebook setup<a class="anchor-link" href="#Jupyter-Notebook-setup"> </a>
+</h3>
+<p>If in case you wish to explore it in Jupyter Notebooks, install a few additional libraries for a better experience:</p>
+
+<pre><code>pip install ipython-sql SQLAlchemy duckdb-engine</code></pre>
+<p>Import them once installed:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">sqlalchemy</span>
+
+<span class="o">%</span><span class="k">load_ext</span> sql
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Set a few config options to prettify the output and return it as Pandas DataFrame</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">config</span> SqlMagic.autopandas = True
+<span class="o">%</span><span class="k">config</span> SqlMagic.feedback = False
+<span class="o">%</span><span class="k">config</span> SqlMagic.displaycon = False
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>DuckDB is primarily designed to be an in-memory DB. You can however persist your data to disk.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">sql</span> duckdb:///:memory:
+<span class="c1"># %sql duckdb:///path/to/file.db</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># we can also access the current config &amp; settings of DuckDB by running the following:</span>
+<span class="o">%</span><span class="k">sql</span> SELECT * FROM duckdb_settings();
+</pre></div>
+
+    </div>
+</div>
+</div>
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Output" data-close="Show Output"></summary>
+        <p>
+</p>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>value</th>
+      <th>description</th>
+      <th>input_type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>access_mode</td>
+      <td>automatic</td>
+      <td>Access mode of the database (AUTOMATIC, READ_O...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>checkpoint_threshold</td>
+      <td>16.7MB</td>
+      <td>The WAL size threshold at which to automatical...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>debug_checkpoint_abort</td>
+      <td>NULL</td>
+      <td>DEBUG SETTING: trigger an abort while checkpoi...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>debug_force_external</td>
+      <td>False</td>
+      <td>DEBUG SETTING: force out-of-core computation f...</td>
+      <td>BOOLEAN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>debug_many_free_list_blocks</td>
+      <td>False</td>
+      <td>DEBUG SETTING: add additional blocks to the fr...</td>
+      <td>BOOLEAN</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>debug_window_mode</td>
+      <td>NULL</td>
+      <td>DEBUG SETTING: switch window mode to use</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>default_collation</td>
+      <td></td>
+      <td>The collation setting used when none is specified</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>default_order</td>
+      <td>asc</td>
+      <td>The order type used when none is specified (AS...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>default_null_order</td>
+      <td>nulls_first</td>
+      <td>Null ordering used when none is specified (NUL...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>disabled_optimizers</td>
+      <td></td>
+      <td>DEBUG SETTING: disable a specific set of optim...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>enable_external_access</td>
+      <td>True</td>
+      <td>Allow the database to access external state (t...</td>
+      <td>BOOLEAN</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>enable_object_cache</td>
+      <td>False</td>
+      <td>Whether or not object cache is used to cache e...</td>
+      <td>BOOLEAN</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>enable_profiling</td>
+      <td>NULL</td>
+      <td>Enables profiling, and sets the output format ...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>enable_progress_bar</td>
+      <td>False</td>
+      <td>Enables the progress bar, printing progress to...</td>
+      <td>BOOLEAN</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>explain_output</td>
+      <td>physical_only</td>
+      <td>Output of EXPLAIN statements (ALL, OPTIMIZED_O...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>force_compression</td>
+      <td>NULL</td>
+      <td>DEBUG SETTING: forces a specific compression m...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>log_query_path</td>
+      <td>NULL</td>
+      <td>Specifies the path to which queries should be ...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>max_memory</td>
+      <td>26.9GB</td>
+      <td>The maximum memory of the system (e.g. 1GB)</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>memory_limit</td>
+      <td>26.9GB</td>
+      <td>The maximum memory of the system (e.g. 1GB)</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>null_order</td>
+      <td>nulls_first</td>
+      <td>Null ordering used when none is specified (NUL...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>perfect_ht_threshold</td>
+      <td>12</td>
+      <td>Threshold in bytes for when to use a perfect h...</td>
+      <td>BIGINT</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>preserve_identifier_case</td>
+      <td>True</td>
+      <td>Whether or not to preserve the identifier case...</td>
+      <td>BOOLEAN</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>profiler_history_size</td>
+      <td>NULL</td>
+      <td>Sets the profiler history size</td>
+      <td>BIGINT</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>profile_output</td>
+      <td></td>
+      <td>The file to which profile output should be sav...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>profiling_mode</td>
+      <td>NULL</td>
+      <td>The profiling mode (STANDARD or DETAILED)</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>profiling_output</td>
+      <td></td>
+      <td>The file to which profile output should be sav...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>progress_bar_time</td>
+      <td>2000</td>
+      <td>Sets the time (in milliseconds) how long a que...</td>
+      <td>BIGINT</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>schema</td>
+      <td></td>
+      <td>Sets the default search schema. Equivalent to ...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>search_path</td>
+      <td></td>
+      <td>Sets the default search search path as a comma...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>temp_directory</td>
+      <td>.tmp</td>
+      <td>Set the directory to which to write temp files</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>threads</td>
+      <td>12</td>
+      <td>The number of total threads used by the system.</td>
+      <td>BIGINT</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>wal_autocheckpoint</td>
+      <td>16.7MB</td>
+      <td>The WAL size threshold at which to automatical...</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>worker_threads</td>
+      <td>12</td>
+      <td>The number of total threads used by the system.</td>
+      <td>BIGINT</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>binary_as_string</td>
+      <td></td>
+      <td>In Parquet files, interpret binary data as a s...</td>
+      <td>BOOLEAN</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>Calendar</td>
+      <td>gregorian</td>
+      <td>The current calendar</td>
+      <td>VARCHAR</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>TimeZone</td>
+      <td>Europe/Berlin</td>
+      <td>The current time zone</td>
+      <td>VARCHAR</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+    </details>
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>From now on, you can run SQL directly by prefixing <code>%sql</code>  (or <code>%%sql</code> for multiline statements) to your code cell and get your output returned as pandas dataframe <img class="emoji" title=":man_dancing:" alt=":man_dancing:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f57a.png" height="20" width="20">.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">sql</span> select 1 as a;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="DuckDB-vs-traditional-Databases">
+<a class="anchor" href="#DuckDB-vs-traditional-Databases" aria-hidden="true"><span class="octicon octicon-link"></span></a>DuckDB vs traditional Databases<a class="anchor-link" href="#DuckDB-vs-traditional-Databases"> </a>
+</h2>
+<p>With <code>pandas.read_sql</code> command, one can already run SQL queries on an existing DB connection, read tables and load data as pandas DataFrames in memory for processing in python. While this is fine for lightweight operations, it is not optimized for heavy data processing. Traditional RDBMSs such as Postgres, MySQL, etc. process each row sequentially which apart from taking long time to execute, also induce a lot of overhead on CPU. DuckDB on the other hand is built with <a href="https://en.wikipedia.org/wiki/Online_analytical_processing">OLAP</a> in mind and is <em>Column-Vectorized</em>. This helps massively parallelize disk I/O and query executions.</p>
+<blockquote>
+<p>DuckDB uses the Postgres SQL parser under the hood, and offers many of the same SQL features as Postgres. <sup id="fnref-1" class="footnote-ref"><a href="#fn-1">1</a></sup></p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Accessing-DataFrames-with-DuckDB">
+<a class="anchor" href="#Accessing-DataFrames-with-DuckDB" aria-hidden="true"><span class="octicon octicon-link"></span></a>Accessing DataFrames with DuckDB<a class="anchor-link" href="#Accessing-DataFrames-with-DuckDB"> </a>
+</h1>
+<p>One of the major limitations of Pandas is that it’s <em>single threaded</em>. Hence we can’t take advantage of the multi-core CPUs which every computer ships with these days. DuckDB <strong><em>supports multi-threading</em></strong> natively and hence can take advantage of all the cores of your CPU.</p>
+<blockquote>
+<p>There exist a few some external libraries that enable parallel processing but only on specific operations.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>While this is turned on by default, we also can explicitly set the number of threads:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># specify no. of threads for multi-threading support</span>
+<span class="c1"># dbcon.execute("PRAGMA threads=32");</span>
+
+<span class="c1"># you can also set this up with the `%sql` line magic</span>
+<span class="o">%</span><span class="k">sql</span> SET THREADS to 32;
+</pre></div>
+
+    </div>
+</div>
+</div>
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Output" data-close="Show Output"></summary>
+        <p>
+</p>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+    </details>
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can also write a short snippet to run an SQL query, and return the result as a Pandas DataFrame in a pythonic way:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">dbrun</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="sd">"""run the query with duckdb"""</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">dbcon</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">to_df</span><span class="p">()</span>
+
+    <span class="c1"># you can also use `fetch` instead</span>
+    <span class="c1"># result = dbcon.execute(query).fetch_df()</span>
+
+    <span class="c1"># or just simply `.df()`</span>
+    <span class="c1"># result = dbcon.execute(query).df()</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now create a DataFrame &amp; run a simple query:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'a'</span><span class="p">])</span>
+
+<span class="c1"># querying with python function</span>
+<span class="n">first_half_df</span> <span class="o">=</span> <span class="n">dbrun</span><span class="p">(</span><span class="s2">"""</span>
+<span class="s2">    SELECT *</span>
+<span class="s2">    FROM df</span>
+<span class="s2">    WHERE a &lt; 5</span>
+<span class="s2">"""</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Alternatively, you can also compute the result with the line magics and store the result as a python variable that you can access elsewhere:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+
+second_half_df &lt;&lt; 
+SELECT *
+FROM df
+WHERE a &gt;= 5
+</pre></div>
+
+    </div>
+</div>
+</div>
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Output" data-close="Show Output"></summary>
+        <p>
+</p>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Returning data to local variable second_half_df
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+    </details>
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Notice that we didn’t declare df as a view, nor did we create any table. DuckDB simply looks for any python variable that was declared before if the table name doesn’t exist.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p></p>
+<div class="flash flash-success">
+    <svg class="octicon octicon-checklist" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2.5 1.75a.25.25 0 01.25-.25h8.5a.25.25 0 01.25.25v7.736a.75.75 0 101.5 0V1.75A1.75 1.75 0 0011.25 0h-8.5A1.75 1.75 0 001 1.75v11.5c0 .966.784 1.75 1.75 1.75h3.17a.75.75 0 000-1.5H2.75a.25.25 0 01-.25-.25V1.75zM4.75 4a.75.75 0 000 1.5h4.5a.75.75 0 000-1.5h-4.5zM4 7.75A.75.75 0 014.75 7h2a.75.75 0 010 1.5h-2A.75.75 0 014 7.75zm11.774 3.537a.75.75 0 00-1.048-1.074L10.7 14.145 9.281 12.72a.75.75 0 00-1.062 1.058l1.943 1.95a.75.75 0 001.055.008l4.557-4.45z"></path></svg>
+    <strong>Tip: </strong>Sometimes, you override a dataframe by performing an operation &amp; assign it to the same variable. For e.g., <code>df = df.query(...)</code>. If in case, you see that the duckdb’s <code>df</code> is still not updated, you can (always) ’register’ the dataframe explicitly as <code>dbcon.register("df", df);</code>
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Accessing-files-with-DuckDB">
+<a class="anchor" href="#Accessing-files-with-DuckDB" aria-hidden="true"><span class="octicon octicon-link"></span></a>Accessing files with DuckDB<a class="anchor-link" href="#Accessing-files-with-DuckDB"> </a>
+</h1>
+<p>Often times we have data stored either in DB or in <code>parquet/csv</code> formats and they could be huge or may not/barely fit in memory. Loading them with pandas incur significant memory overhead and also possibly <a href="https://pandas.pydata.org/pandas-docs/stable/user_guide/scale.html">creates multiple copies</a> when performing certain operations. With DuckDB, such files can be queried directly without any copying because of <a href="https://arrow.apache.org/blog/2021/12/03/arrow-duckdb/">direct integration with Apache Arrow</a>.</p>
+<p>To demonstrate this, we’ll download an <a href="https://www.kaggle.com/datasets/yuanyuwendymu/airline-delay-and-cancellation-data-2009-2018">airline delay &amp; cancelation dataset from kaggle</a>. The compressed archive is about <code>~2GB</code> and when deflated, creates a couple of CSVs totalling 7GB of data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let’s have a quick look at the contents by loading a single csv file:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+
+select *
+from './data/airline_data/2009.csv'
+limit 5
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>FL_DATE</th>
+      <th>OP_CARRIER</th>
+      <th>OP_CARRIER_FL_NUM</th>
+      <th>ORIGIN</th>
+      <th>DEST</th>
+      <th>CRS_DEP_TIME</th>
+      <th>DEP_TIME</th>
+      <th>DEP_DELAY</th>
+      <th>TAXI_OUT</th>
+      <th>WHEELS_OFF</th>
+      <th>...</th>
+      <th>CRS_ELAPSED_TIME</th>
+      <th>ACTUAL_ELAPSED_TIME</th>
+      <th>AIR_TIME</th>
+      <th>DISTANCE</th>
+      <th>CARRIER_DELAY</th>
+      <th>WEATHER_DELAY</th>
+      <th>NAS_DELAY</th>
+      <th>SECURITY_DELAY</th>
+      <th>LATE_AIRCRAFT_DELAY</th>
+      <th>Unnamed: 27</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2009-01-01</td>
+      <td>XE</td>
+      <td>1204</td>
+      <td>DCA</td>
+      <td>EWR</td>
+      <td>1100</td>
+      <td>1058.0</td>
+      <td>-2.0</td>
+      <td>18.0</td>
+      <td>1116.0</td>
+      <td>...</td>
+      <td>62.0</td>
+      <td>68.0</td>
+      <td>42.0</td>
+      <td>199.0</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2009-01-01</td>
+      <td>XE</td>
+      <td>1206</td>
+      <td>EWR</td>
+      <td>IAD</td>
+      <td>1510</td>
+      <td>1509.0</td>
+      <td>-1.0</td>
+      <td>28.0</td>
+      <td>1537.0</td>
+      <td>...</td>
+      <td>82.0</td>
+      <td>75.0</td>
+      <td>43.0</td>
+      <td>213.0</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2009-01-01</td>
+      <td>XE</td>
+      <td>1207</td>
+      <td>EWR</td>
+      <td>DCA</td>
+      <td>1100</td>
+      <td>1059.0</td>
+      <td>-1.0</td>
+      <td>20.0</td>
+      <td>1119.0</td>
+      <td>...</td>
+      <td>70.0</td>
+      <td>62.0</td>
+      <td>36.0</td>
+      <td>199.0</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2009-01-01</td>
+      <td>XE</td>
+      <td>1208</td>
+      <td>DCA</td>
+      <td>EWR</td>
+      <td>1240</td>
+      <td>1249.0</td>
+      <td>9.0</td>
+      <td>10.0</td>
+      <td>1259.0</td>
+      <td>...</td>
+      <td>77.0</td>
+      <td>56.0</td>
+      <td>37.0</td>
+      <td>199.0</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2009-01-01</td>
+      <td>XE</td>
+      <td>1209</td>
+      <td>IAD</td>
+      <td>EWR</td>
+      <td>1715</td>
+      <td>1705.0</td>
+      <td>-10.0</td>
+      <td>24.0</td>
+      <td>1729.0</td>
+      <td>...</td>
+      <td>105.0</td>
+      <td>77.0</td>
+      <td>40.0</td>
+      <td>213.0</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 28 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>we can load efficiently with pandas too by specifying the <code>nrows</code> parameter:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'./data/airline_data/2009.csv'</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>FL_DATE</th>
+      <th>OP_CARRIER</th>
+      <th>OP_CARRIER_FL_NUM</th>
+      <th>ORIGIN</th>
+      <th>DEST</th>
+      <th>CRS_DEP_TIME</th>
+      <th>DEP_TIME</th>
+      <th>DEP_DELAY</th>
+      <th>TAXI_OUT</th>
+      <th>WHEELS_OFF</th>
+      <th>...</th>
+      <th>CRS_ELAPSED_TIME</th>
+      <th>ACTUAL_ELAPSED_TIME</th>
+      <th>AIR_TIME</th>
+      <th>DISTANCE</th>
+      <th>CARRIER_DELAY</th>
+      <th>WEATHER_DELAY</th>
+      <th>NAS_DELAY</th>
+      <th>SECURITY_DELAY</th>
+      <th>LATE_AIRCRAFT_DELAY</th>
+      <th>Unnamed: 27</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2009-01-01</td>
+      <td>XE</td>
+      <td>1204</td>
+      <td>DCA</td>
+      <td>EWR</td>
+      <td>1100</td>
+      <td>1058.0</td>
+      <td>-2.0</td>
+      <td>18.0</td>
+      <td>1116.0</td>
+      <td>...</td>
+      <td>62.0</td>
+      <td>68.0</td>
+      <td>42.0</td>
+      <td>199.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2009-01-01</td>
+      <td>XE</td>
+      <td>1206</td>
+      <td>EWR</td>
+      <td>IAD</td>
+      <td>1510</td>
+      <td>1509.0</td>
+      <td>-1.0</td>
+      <td>28.0</td>
+      <td>1537.0</td>
+      <td>...</td>
+      <td>82.0</td>
+      <td>75.0</td>
+      <td>43.0</td>
+      <td>213.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2009-01-01</td>
+      <td>XE</td>
+      <td>1207</td>
+      <td>EWR</td>
+      <td>DCA</td>
+      <td>1100</td>
+      <td>1059.0</td>
+      <td>-1.0</td>
+      <td>20.0</td>
+      <td>1119.0</td>
+      <td>...</td>
+      <td>70.0</td>
+      <td>62.0</td>
+      <td>36.0</td>
+      <td>199.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2009-01-01</td>
+      <td>XE</td>
+      <td>1208</td>
+      <td>DCA</td>
+      <td>EWR</td>
+      <td>1240</td>
+      <td>1249.0</td>
+      <td>9.0</td>
+      <td>10.0</td>
+      <td>1259.0</td>
+      <td>...</td>
+      <td>77.0</td>
+      <td>56.0</td>
+      <td>37.0</td>
+      <td>199.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2009-01-01</td>
+      <td>XE</td>
+      <td>1209</td>
+      <td>IAD</td>
+      <td>EWR</td>
+      <td>1715</td>
+      <td>1705.0</td>
+      <td>-10.0</td>
+      <td>24.0</td>
+      <td>1729.0</td>
+      <td>...</td>
+      <td>105.0</td>
+      <td>77.0</td>
+      <td>40.0</td>
+      <td>213.0</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 28 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This takes much less time than with DuckDB. It’s possibly because such operations are optimized in pandas and also for computing simple metrics across rows (such as mean, min, max etc.), pandas can make use of highly optimized numpy routines under the hood. But, as we’ll see later, these would only go so far.</p>
+<p>To load all these CSVs into one dataframe with pandas is very inefficient and takes a lot of time. And it’ll most likely fail if your computer doesn’t have a beefy RAM. If you still gotta do it, you’d have to iterate through all CSVs and concatenate like so:</p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+<span class="n">csvs</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="s1">'data/airline_data/*.csv'</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv</span><span class="p">)</span> <span class="k">for</span> <span class="n">csv</span> <span class="ow">in</span> <span class="n">csvs</span><span class="p">)</span>
+</pre></div>
+<p>A better alternative would be to merge all those CSVs into a single parquet file. Unlike CSVs, parquet files are structured and as such are unambiguous to read <sup id="fnref-2" class="footnote-ref"><a href="#fn-2">2</a></sup>. They are compressed columnar files and hence take much less space than individual CSVs combined because of the efficient Arrow data format.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">sql</span> copy 'data/airline_data/*.csv' to 'data/airline_data/data.parquet'
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>61556964</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<blockquote>
+<p>If the above statement fails, try installing <code>PyArrow</code> first by simply running <code>pip install pyarrow</code>.</p>
+</blockquote>
+<p>Notice that we directly copied all the CSVs using regex to a single parquet file without ever copying data into pandas.</p>
+<p>Now, we ended up from a 7.5GB combined CSV files to a 2.5GB parquet file which now easily fits into memory. So we can load it now with pandas as:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">(</span><span class="s1">'data/airline_data/data.parquet'</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(61556964, 28)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Because of the efficient parquet format, we could load the entire <em>61 Million</em> rows of data in mere seconds.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Projection-&amp;-Filter-Pushdowns">
+<a class="anchor" href="#Projection-&amp;-Filter-Pushdowns" aria-hidden="true"><span class="octicon octicon-link"></span></a>Projection &amp; Filter Pushdowns<a class="anchor-link" href="#Projection-&amp;-Filter-Pushdowns"> </a>
+</h2>
+<p>Now let’s do a simple filter operation on our dataset. Let’s count the total number of rows that satisfy the condition <code>TAXI_OUT &gt; 10</code>. We’ll try with both pandas &amp; duckdb.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'TAXI_OUT'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(45209245, 28)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+
+select count(*) as count
+from df
+where TAXI_OUT &gt; 10
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>45209245</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong><em>The same operation is near instantaneous with DuckDB.</em></strong> <em>There’s just no comparison.</em></p>
+<p>This is because duckdb automatically optimizes the query by selecting only the required column(s) (aka <code>projection pushdown</code>) and then applies the filtering to get a subset of data (aka <code>filter pushdown</code>). Pandas instead reads through all the columns. We can optimize this in pandas by doing these pushdowns ourselves.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">projection_pushdown_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">'TAXI_OUT'</span><span class="p">]]</span>
+<span class="n">filter_pushdown_df</span> <span class="o">=</span> <span class="n">projection_pushdown_df</span><span class="p">[</span><span class="n">projection_pushdown_df</span><span class="p">[</span><span class="s1">'TAXI_OUT'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">]</span>
+<span class="n">filter_pushdown_df</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(45209245, 1)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We managed to bring this down from a whopping 30 seconds to almost a second. But using duckdb is still <code>~80%</code> faster than this.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Using-Groupby">
+<a class="anchor" href="#Using-Groupby" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using Groupby<a class="anchor-link" href="#Using-Groupby"> </a>
+</h2>
+<p>Let’s calculate a few aggregates using <code>groupby</code> with projection &amp; filter pushdowns combined.</p>
+<p>Here, we compute a few simple metrics with a certain airline carrier grouped by two origin &amp; destination airports and finally sort the results by the origin airport.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">projection_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">'ORIGIN'</span><span class="p">,</span> <span class="s1">'DEST'</span><span class="p">,</span> <span class="s1">'TAXI_OUT'</span><span class="p">,</span> 
+                    <span class="s1">'AIR_TIME'</span><span class="p">,</span> <span class="s1">'DISTANCE'</span><span class="p">,</span> <span class="s1">'OP_CARRIER'</span><span class="p">]]</span>
+<span class="n">origin_df</span> <span class="o">=</span> <span class="n">projection_df</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">projection_df</span><span class="p">[</span><span class="s1">'ORIGIN'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">((</span><span class="s1">'DCA'</span><span class="p">,</span> <span class="s1">'EWR'</span><span class="p">)))</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">projection_df</span><span class="p">[</span><span class="s1">'DEST'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">((</span><span class="s1">'DCA'</span><span class="p">,</span> <span class="s1">'EWR'</span><span class="p">)))</span> <span class="o">&amp;</span>
+    <span class="p">(</span><span class="n">projection_df</span><span class="p">[</span><span class="s1">'OP_CARRIER'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'XE'</span><span class="p">)]</span>
+<span class="p">(</span><span class="n">origin_df</span>
+     <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'ORIGIN'</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+         <span class="n">avg_taxi_out</span><span class="o">=</span><span class="p">(</span><span class="s1">'TAXI_OUT'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">),</span>
+         <span class="n">max_air_time</span><span class="o">=</span><span class="p">(</span><span class="s1">'AIR_TIME'</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">),</span>
+         <span class="n">total_distance</span><span class="o">=</span><span class="p">(</span><span class="s1">'DISTANCE'</span><span class="p">,</span> <span class="s1">'sum'</span><span class="p">))</span>
+     <span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>avg_taxi_out</th>
+      <th>max_air_time</th>
+      <th>total_distance</th>
+    </tr>
+    <tr>
+      <th>ORIGIN</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>DCA</th>
+      <td>22.116009</td>
+      <td>87.0</td>
+      <td>828835.0</td>
+    </tr>
+    <tr>
+      <th>EWR</th>
+      <td>23.675481</td>
+      <td>93.0</td>
+      <td>831024.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This took some time. We can make it a bit more concise by using <code>.query</code> for filtering pushdown.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">(</span><span class="n">df</span>
+ <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">'OP_CARRIER == "XE" and ORIGIN in ("DCA", "EWR") and DEST in ("DCA", "EWR")'</span><span class="p">)</span>
+ <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'ORIGIN'</span><span class="p">,</span> <span class="s1">'DEST'</span><span class="p">])</span>
+ <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
+     <span class="n">avg_taxi_out</span><span class="o">=</span><span class="p">(</span><span class="s1">'TAXI_OUT'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">),</span>
+     <span class="n">max_air_time</span><span class="o">=</span><span class="p">(</span><span class="s1">'AIR_TIME'</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">),</span>
+     <span class="n">total_distance</span><span class="o">=</span><span class="p">(</span><span class="s1">'DISTANCE'</span><span class="p">,</span> <span class="s1">'sum'</span><span class="p">))</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>avg_taxi_out</th>
+      <th>max_air_time</th>
+      <th>total_distance</th>
+    </tr>
+    <tr>
+      <th>ORIGIN</th>
+      <th>DEST</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>DCA</th>
+      <th>EWR</th>
+      <td>22.116009</td>
+      <td>87.0</td>
+      <td>828835.0</td>
+    </tr>
+    <tr>
+      <th>EWR</th>
+      <th>DCA</th>
+      <td>23.675481</td>
+      <td>93.0</td>
+      <td>831024.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This operation is a bit faster than our earlier approach because <code>.query</code> uses a modified syntax of python and also indexing thus resulting in more efficient evaluation. We can now compare that to our SQL counterpart.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+
+select
+    ORIGIN,
+    DEST,
+    AVG(TAXI_OUT) as avg_taxi_out,
+    MAX(AIR_TIME) as max_air_time,
+    SUM(DISTANCE) as total_distance
+
+from df
+
+where
+    OP_CARRIER = 'XE' and
+    ORIGIN in ('DCA', 'EWR') and
+    DEST in ('DCA', 'EWR')
+    
+group by ORIGIN, DEST
+order by ORIGIN
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ORIGIN</th>
+      <th>DEST</th>
+      <th>avg_taxi_out</th>
+      <th>max_air_time</th>
+      <th>total_distance</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>DCA</td>
+      <td>EWR</td>
+      <td>22.116009</td>
+      <td>87.0</td>
+      <td>828835.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>EWR</td>
+      <td>DCA</td>
+      <td>23.675481</td>
+      <td>93.0</td>
+      <td>831024.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is still around an <em>order of magnitude</em> faster with DuckDB and also a lot cleaner, I’d say. <img class="emoji" title=":wink:" alt=":wink:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f609.png" height="20" width="20"></p>
+<p>Notice that the data is already loaded under <code>df</code> and hence we don’t need to read from the source parquet file.</p>
+<blockquote>
+<p>In the same way, we can also improve the performance of our queries <em>drastically</em> when using <strong><em>joins</em></strong> across multiple tables. I leave this as an exercise to the reader.</p>
+</blockquote>
+<p><em>But why actually load data into memory in the first place when we can process it more efficiently with it being just on disk?</em> Often times, the data is too big to load into memory anyways.</p>
+<p>To do that, we just need to create a <code>VIEW</code> to our data which lets us query the table directly without loading onto memory and update the source from the dataframe <code>df</code> to the newly created view instead. <sup id="fnref-3" class="footnote-ref"><a href="#fn-3">3</a></sup></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Accessing-data-with-Views">
+<a class="anchor" href="#Accessing-data-with-Views" aria-hidden="true"><span class="octicon octicon-link"></span></a>Accessing data with <code>Views</code><a class="anchor-link" href="#Accessing-data-with-Views"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+
+create view airlinedata as select * from 'data/airline_data/data.parquet';
+
+select
+    ORIGIN,
+    DEST,
+    AVG(TAXI_OUT) as avg_taxi_out,
+    MAX(AIR_TIME) as max_air_time,
+    SUM(DISTANCE) as total_distance
+
+from airlinedata
+
+where
+    OP_CARRIER = 'XE' and
+    ORIGIN in ('DCA', 'EWR') and
+    DEST in ('DCA', 'EWR')
+
+-- you can also use `ALL` instead of each column
+group by ALL
+order by ORIGIN
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ORIGIN</th>
+      <th>DEST</th>
+      <th>avg_taxi_out</th>
+      <th>max_air_time</th>
+      <th>total_distance</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>DCA</td>
+      <td>EWR</td>
+      <td>22.116009</td>
+      <td>87.0</td>
+      <td>828835.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>EWR</td>
+      <td>DCA</td>
+      <td>23.675481</td>
+      <td>93.0</td>
+      <td>831024.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is such a powerful feature and allows us to explore <em>lot</em> more data than traditionally possible with pandas.</p>
+<p>We can also check the datatypes and other metadata with <code>describe view/table name</code></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">sql</span> describe airlinedata
+</pre></div>
+
+    </div>
+</div>
+</div>
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Output" data-close="Show Output"></summary>
+        <p>
+</p>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>column_name</th>
+      <th>column_type</th>
+      <th>null</th>
+      <th>key</th>
+      <th>default</th>
+      <th>extra</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>FL_DATE</td>
+      <td>DATE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>OP_CARRIER</td>
+      <td>VARCHAR</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>OP_CARRIER_FL_NUM</td>
+      <td>INTEGER</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>ORIGIN</td>
+      <td>VARCHAR</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>DEST</td>
+      <td>VARCHAR</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>CRS_DEP_TIME</td>
+      <td>INTEGER</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>DEP_TIME</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>DEP_DELAY</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>TAXI_OUT</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>WHEELS_OFF</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>WHEELS_ON</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>TAXI_IN</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>CRS_ARR_TIME</td>
+      <td>INTEGER</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>ARR_TIME</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>ARR_DELAY</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>CANCELLED</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>CANCELLATION_CODE</td>
+      <td>VARCHAR</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>DIVERTED</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>CRS_ELAPSED_TIME</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>ACTUAL_ELAPSED_TIME</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>AIR_TIME</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>DISTANCE</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>CARRIER_DELAY</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>WEATHER_DELAY</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>NAS_DELAY</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>SECURITY_DELAY</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>LATE_AIRCRAFT_DELAY</td>
+      <td>DOUBLE</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Unnamed: 27</td>
+      <td>VARCHAR</td>
+      <td>YES</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+    </details>
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Using-approximations">
+<a class="anchor" href="#Using-approximations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using approximations<a class="anchor-link" href="#Using-approximations"> </a>
+</h2>
+<p>We can use approximations when responsiveness is more important than precision (esp. for larger datasets).</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+
+select
+    OP_CARRIER,
+    approx_count_distinct(DEST) as approx_num_unique_destinations
+
+from airlinedata
+
+group by 1
+order by 1
+
+limit 10
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>OP_CARRIER</th>
+      <th>approx_num_unique_destinations</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>9E</td>
+      <td>186</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>AA</td>
+      <td>116</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>AS</td>
+      <td>77</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>B6</td>
+      <td>73</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>CO</td>
+      <td>85</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>DL</td>
+      <td>171</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>EV</td>
+      <td>205</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>F9</td>
+      <td>130</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>FL</td>
+      <td>75</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>G4</td>
+      <td>126</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+
+select
+    OP_CARRIER,
+    -- takes more time to compute
+    count(distinct DEST) as num_unique_destinations
+
+from airlinedata
+
+group by 1
+order by 1
+
+limit 10
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>OP_CARRIER</th>
+      <th>num_unique_destinations</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>9E</td>
+      <td>185</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>AA</td>
+      <td>116</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>AS</td>
+      <td>77</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>B6</td>
+      <td>73</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>CO</td>
+      <td>85</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>DL</td>
+      <td>170</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>EV</td>
+      <td>205</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>F9</td>
+      <td>129</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>FL</td>
+      <td>75</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>G4</td>
+      <td>126</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Using approximations was about <code>3-4</code> times faster than getting the precise counts for this case.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Using-Window-functions">
+<a class="anchor" href="#Using-Window-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using Window functions<a class="anchor-link" href="#Using-Window-functions"> </a>
+</h2>
+<p>And finally, let's wrap our analysis by showing off a bit more of what duckdb can do using some advanced SQL operations.</p>
+<p>We create a few CTEs (Common Table Expressions) to calculate a couple of features. We do filter &amp; projection pushdowns in one and compute our desired features in another. The first feature is a simple demo to showcase <code>if-else</code> support. The second feature is a bit advanced where we find out the last destination a given air carrier has flown to sorted by flying date. And when it doesn’t exist, we replace it with <code>NA</code>. We then take a sample from the final resultant set.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+
+with limited_data as (
+    select 
+        FL_DATE,
+        ORIGIN, 
+        DEST, 
+        DISTANCE,
+        OP_CARRIER,
+    from airlinedata
+    where FL_DATE &gt;= '2015-01-01'    
+),
+
+last_destination_data as (
+    select *,
+        case
+            when DISTANCE*1.60934 &gt; 500 then 'yes'
+            else 'no'
+        end as distance_more_than_500_km,
+
+        coalesce(last_value(DEST) over (
+            partition by OP_CARRIER
+            order by FL_DATE
+            rows between unbounded preceding and 1 preceding
+        ), 'NA') as last_destination_flown_with_this_carrier
+
+    from limited_data
+)
+
+select *
+from last_destination_data
+using sample 10;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>FL_DATE</th>
+      <th>ORIGIN</th>
+      <th>DEST</th>
+      <th>DISTANCE</th>
+      <th>OP_CARRIER</th>
+      <th>distance_more_than_500_km</th>
+      <th>last_destination_flown_with_this_carrier</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2018-07-10</td>
+      <td>DCA</td>
+      <td>LGA</td>
+      <td>214.0</td>
+      <td>YX</td>
+      <td>no</td>
+      <td>DCA</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2015-05-08</td>
+      <td>DAL</td>
+      <td>BWI</td>
+      <td>1209.0</td>
+      <td>WN</td>
+      <td>yes</td>
+      <td>BWI</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2018-03-30</td>
+      <td>LAS</td>
+      <td>SJC</td>
+      <td>386.0</td>
+      <td>WN</td>
+      <td>yes</td>
+      <td>SJC</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2015-07-10</td>
+      <td>BOS</td>
+      <td>MSP</td>
+      <td>1124.0</td>
+      <td>DL</td>
+      <td>yes</td>
+      <td>DTW</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2016-06-01</td>
+      <td>DTW</td>
+      <td>BWI</td>
+      <td>409.0</td>
+      <td>DL</td>
+      <td>yes</td>
+      <td>DTW</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>2017-07-26</td>
+      <td>GEG</td>
+      <td>MSP</td>
+      <td>1175.0</td>
+      <td>DL</td>
+      <td>yes</td>
+      <td>SAN</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>2017-01-10</td>
+      <td>DFW</td>
+      <td>ACT</td>
+      <td>89.0</td>
+      <td>EV</td>
+      <td>no</td>
+      <td>DFW</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>2015-01-01</td>
+      <td>PHX</td>
+      <td>DRO</td>
+      <td>351.0</td>
+      <td>OO</td>
+      <td>yes</td>
+      <td>BFL</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>2018-05-06</td>
+      <td>DFW</td>
+      <td>MCO</td>
+      <td>985.0</td>
+      <td>AA</td>
+      <td>yes</td>
+      <td>IAH</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>2018-04-30</td>
+      <td>MSY</td>
+      <td>LAX</td>
+      <td>1670.0</td>
+      <td>WN</td>
+      <td>yes</td>
+      <td>LAX</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Nice, isn’t it?!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conclusion">
+<a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
+</h1>
+<p>Thanks so much for reading this far <img class="emoji" title=":heart:" alt=":heart:" src="https://github.githubassets.com/images/icons/emoji/unicode/2764.png" height="20" width="20">. Now you know most of the important stuff about DuckDB to get yourself started. Bear in mind that we hardly scratched the surface. DuckDB offers so much more. You can use correlated subqueries, nested types, etc. apart from its many <a href="https://duckdb.org/2022/05/04/friendlier-sql.html">user friendly features</a> such as column aliasing in <code>group by/having</code>, auto-incrementing duplicate columns, better string slicing and so on. Their <a href="https://duckdb.org/docs/">documentation</a> is very clean &amp; beginner friendly and the <a href="https://duckdb.org/news/">blog</a> has very informative posts as well. I encourage you to check those out.</p>
+<h3 id="Sidenote">
+<a class="anchor" href="#Sidenote" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sidenote<a class="anchor-link" href="#Sidenote"> </a>
+</h3>
+<ul>
+<li>
+<a href="https://modin.org/">Modin</a> tries to parallellize pandas workflow by distributing the workload to multiple CPU cores. <a href="https://www.kdnuggets.com/2019/11/speed-up-pandas-4x.html">Have a look</a> and am guessing that we can also combine modin &amp; DuckDB for an even faster runtimes.</li>
+<li>
+<a href="https://github.com/fugue-project/fugue">Fugue</a> is a new framework that provides a unified interface so that users can execute their Python, Pandas, and SQL code on various distributed computing platforms such as Spark and Dask without rewrites. Please check <a href="https://towardsdatascience.com/introducing-fugue-reducing-pyspark-developer-friction-a702230455de">here</a> for its nice introduction and <a href="https://towardsdatascience.com/fugue-and-duckdb-fast-sql-code-in-python-e2e2dfc0f8eb">this</a> article to get a feel of using it with DuckDB.</li>
+</ul>
+<p>I hope you have enjoyed this post and learnt something from it. Please let me know your thoughts/suggestions (or any mistakes) in the comments below.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Footnotes">
+<a class="anchor" href="#Footnotes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Footnotes<a class="anchor-link" href="#Footnotes"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p></p>
+<div class="footnotes"><p id="fn-1">1. <a href="https://duckdb.org/2021/05/14/sql-on-pandas.html">SQL on Pandas with duckdb</a><a href="#fnref-1" class="footnote footnotes">↩</a></p></div>
+<p></p>
+<div class="footnotes"><p id="fn-2">2. <a href="https://duckdb.org/docs/archive/0.2.8/data/parquet">duckdb on parquet</a><a href="#fnref-2" class="footnote footnotes">↩</a></p></div>
+<p></p>
+<div class="footnotes"><p id="fn-3">3. The exact execution times might vary a bit depending on the load &amp; build of your computer. I also noticed that the operations are cached and the first computation takes a bit of time but running it again or after changing the values of the columns in the <code>WHERE</code> clause would only take a couple of <code>ms</code> later on.<a href="#fnref-3" class="footnote footnotes">↩</a></p></div>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div>
+<!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js" repo="samsaara/blog" issue-term="title" label="blogpost-comment" theme="github-light" crossorigin="anonymous" async>
+</script><a class="u-url" href="/blog/sql/eda/2022/05/27/duckdb-tutorial.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+
+    <div class="wrapper">
+        <div class="custom-footer-content">
+            <p>© Vivek Vaddina 2022</p>
+        </div>
+        <!-- <span>test</span> -->
+        <div class="footer-col-wrapper">
+            <a href="/blog/feed.xml">
+                <svg class="svg-icon orange">
+                <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+                </svg>
+            </a>
+            <div class="fa-social-links">
+                
+                <a href="mailto:vvaddina@pm.me" class="fa-social-links__entry" target="_blank">
+                    <i class="fa fa-envelope-square"></i>
+                </a>
+                
+                
+                <a href="https://github.com/samsaara" class="fa-social-links__entry" target="_blank">
+                    <i class="fa fa-github-square"></i>
+                </a>
+                
+                
+                <a href="https://linkedin.com/in/vivekvaddina" class="fa-social-links__entry" target="_blank">
+                    <i class="fa fa-linkedin"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+
+</footer></body>
+
+</html>

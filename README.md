@@ -13,3 +13,4 @@ _powered by [fastpages](https://github.com/fastai/fastpages)_
 
 ## Credits
 Logo: [Freepik](https://www.flaticon.com/free-icons/earth-day)
+
